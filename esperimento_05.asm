@@ -1,15 +1,20 @@
 ; ESPERIMENTO DI RASTER #5: Crea uno schermo in modalità ECM ed usa un raster stabile per evidenziare la linea #13 cambiando la palette di colori
 
-!source <symbols.asm>
-!source <kernal.asm>
-!source <vic_ii.asm>
-!source <cia.asm>
-!source <standard.asm>
+; PROVA TEMPORANEA: once sospeso (LIB-01).
+!source "config_esperimento_05.asm"
 
-+BASIC_Preamble 10,START,"ESPERIMENTO DI RASTER #5"
+!source <c64/symbols.asm>
+!source <c64/kernal.asm>
+!source <chip/vic_ii.asm>
+!source <chip/cia.asm>
+!source <system/standard.asm>
+
+BASIC_START         = BASTXT
+
+*= BASIC_START
++m_BASIC_Preamble 10,START,"ESPERIMENTO DI RASTER #5"
 
 PTR     = ZP_1
-UNUSED  = TEMP_2
 
 RASTER_LINE = 51+12*8-1         ; Il cambio di colore deve avvenire in corrispondenza della 13 riga dello schermo (linea 146)
 
@@ -110,15 +115,15 @@ START:
   inc VICIRQ                    ; Linea 143   cicli 62-68 - Il raster potrebbe gia' essere sulla linea video 144 (per questo e' settato l'IRQ alla linea 145)
 
   cli                           ; Linea 144   cicli 1-7 (riattiva la modalita' IRQ)
-  inc UNUSED                    ; Linea 144   cicli 7-13
-  dec UNUSED                    ; Linea 144   cicli 13-19
-  inc UNUSED                    ; Linea 144   cicli 19-25
-  dec UNUSED                    ; Linea 144   cicli 25-31
-  inc UNUSED                    ; Linea 144   cicli 31-37
-  dec UNUSED                    ; Linea 144   cicli 37-43
-  inc UNUSED                    ; Linea 144   cicli 43-49
-  dec UNUSED                    ; Linea 144   cicli 49-55
-  inc UNUSED                    ; Linea 144   cicli 55-61
+  inc UNUSE2                    ; Linea 144   cicli 7-13
+  dec UNUSE2                    ; Linea 144   cicli 13-19
+  inc UNUSE2                    ; Linea 144   cicli 19-25
+  dec UNUSE2                    ; Linea 144   cicli 25-31
+  inc UNUSE2                    ; Linea 144   cicli 31-37
+  dec UNUSE2                    ; Linea 144   cicli 37-43
+  inc UNUSE2                    ; Linea 144   cicli 43-49
+  dec UNUSE2                    ; Linea 144   cicli 49-55
+  inc UNUSE2                    ; Linea 144   cicli 55-61
   nop                           ; Linea 144   cicli 57-63
   nop                           ;  - Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
   nop                           ;  - Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)

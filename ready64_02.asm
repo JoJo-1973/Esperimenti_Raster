@@ -1,12 +1,19 @@
-; RASTER #2: Stesso effetto di RASTER #1 ma con l'uso delle interruzioni
+; ESERCIZIO DI RASTER #2: Stesso effetto di RASTER #1 ma con l'uso delle interruzioni
+; Codice originale di 0scur0, riadattato secondo le mie convenzioni di stile. Il codice originale non è stato alterato, solo i commenti.
 ; https://ready64.org/articoli/leggi/idart/112/lo-schermo-del-c64-e-il-raster
+
+; PROVA TEMPORANEA: once sospeso (LIB-01).
+!source "config_ready64_02.asm"
 
 !source <c64/symbols.asm>
 !source <chip/vic_ii.asm>
 !source <chip/cia.asm>
 !source <system/standard.asm>
 
-+BASIC_Preamble 10,START,"ESERCIZI DI RASTER #2"
+BASIC_START         = BASTXT
+
+*= BASIC_START
++m_BASIC_Preamble 10,START,"ESERCIZIO DI RASTER #2"
 
 RASTER_LINE       = 158         ; Interruzione alla linea video 158
 
