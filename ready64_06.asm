@@ -16,7 +16,7 @@ BASIC_START         = BASTXT
 +m_BASIC_Preamble 10,START,"ESERCIZIO DI RASTER #6"
 
 DUMMY             = UNUSE2
-SCAN              = $E5CD
+SCAN              = $E5CD       ; Routine senza nome del Kernal che scansiona la tastiera in attesa della pressione di un tasto
 RASTER_LINE       = 21          ; Linea di inizio della rasterbar
 ROWS              = 15          ; Altezza della rasterbar
 
@@ -24,7 +24,7 @@ START:
   lda #%00000001                ; Disattiva il timer A (la scansione dovrà essere gestita dal nostro gestore di interruzioni)
   sta CIAICR
 
-  jsr .DefSprt                  ; Definisce lo sprite 0
+  jsr DEFINE_SPRITE      ; Definisce lo sprite 0
 
   lda #<.IRQ_1                  ; Setta il primo gestore di interruzioni
   sta CINV
@@ -42,12 +42,12 @@ START:
 
   rts
 
-.DefSprt:
+DEFINE_SPRITE
   lda #$01
   ldx #$00
-  ldy #$00                      ; Ultima linea di scansione dello sprite = linea di generazione dell'IRQ
+  ldy #$00
   stx SP0X
-  sty SP0Y
+  sty SP0Y ; Ultima linea di scansione dello sprite = linea di generazione dell'IRQ
   sty MSIGX
   sta SPENA
 
@@ -57,29 +57,30 @@ START:
 ;                             TRASCORSI DALL'IRQ
 ;                            --------------------
 
-.IRQ_1:                         ; 38-41
-  ldx #$FF                      ; 40-43
-  lda DUMMY                     ; 44-47
-  dec DUMMY                     ; 50-53
-  lda DUMMY                     ; 54-57 - Il microprocessore si arresta dopo questa istruzione ed il VIC si "ruba" 3 cicli
+.IRQ_1:
+  ldx #$FF                      ; 38-41 (+2) Linea 20 - Queste temporizzazioni funzionano solo sulla versione PAL del chip VIC-II
+  lda DUMMY                     ; 40-43 (+4) Linea 20
+  dec DUMMY                     ; 44-47 (+6) Linea 20
+  lda DUMMY                     ; 50-53 (+4) Linea 20 - Il microprocessore si arresta dopo questa istruzione ed il VIC-II si "ruba" 3 cicli
 
-.Fill:                          ; quando la CPU inizia ad eseguire questa istruzione siamo al ciclo 60
-  stx EXTCOL                    ; 63
+.Fill:
+  stx EXTCOL                    ; 60    (+4) Linea 20 - Quando la CPU inizia ad eseguire questa istruzione siamo al ciclo 60
 
-;                                 Ora siamo esattamente all'inizio della linea 21
-  dec DUMMY                     ; +6
-  inc DUMMY                     ; +6
-  dec DUMMY                     ; +6
-  inc DUMMY                     ; +6
-  dec DUMMY                     ; +6
-  inc DUMMY                     ; +6
-  dec DUMMY                     ; +6
-  inc DUMMY                     ; +6
-  nop                           ; +2
-  nop                           ; +2
-  inx                           ; +2
-  cpx #ROWS                     ; +2
-  bne .Fill                     ; +3
+
+  dec DUMMY                     ; 1  (+6)     Linea 21 - Ora siamo esattamente all'inizio della linea 21
+  inc DUMMY                     ; 7  (+6)     Linea 21
+  dec DUMMY                     ; 13 (+6)     Linea 21
+  inc DUMMY                     ; 19 (+6)     Linea 21
+  dec DUMMY                     ; 25 (+6)     Linea 21
+  inc DUMMY                     ; 31 (+6)     Linea 21
+  dec DUMMY                     ; 37 (+6)     Linea 21
+  inc DUMMY                     ; 43 (+6)     Linea 21
+  nop                           ; 49 (+2)     Linea 21
+  nop                           ; 51 (+2)     Linea 21
+  inx                           ; 53 (+2)     Linea 21
+  cpx #ROWS                     ; 55 (+2)     Linea 21
+  bne .Fill                     ; 57 (+3)     Linea 21 - Si ritorna a .Fill allo stesso numero di cicli in cui ci si entrati per la prima volta
+
 
   inc VICIRQ                    ; Permette le interruzioni successive
   jmp IRQHND                    ; e permette al C64 le operazioni di routine

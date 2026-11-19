@@ -16,7 +16,7 @@ BASIC_START         = BASTXT
 +m_BASIC_Preamble 10,START,"ESERCIZIO DI RASTER #5"
 
 DUMMY             = UNUSE2
-SCAN              = $E5CD
+SCAN              = $E5CD       ; Routine senza nome del Kernal che scansiona la tastiera in attesa della pressione di un tasto
 RASTER_LINE       = 155         ; Linea di inizio della rasterbar
 ROWS              = 16          ; Altezza della rasterbar
 
@@ -44,57 +44,57 @@ START:
 ;                             TRASCORSI DALL'IRQ
 ;                            --------------------
 
-.IRQ_1:                         ; 38-44
-  lda #<.IRQ_2                  ; 40-46
-  sta CINV                      ; 44-50
-  lda #>.IRQ_2                  ; 46-52
-  sta CINV+1                    ; 50-56
-  lda #(RASTER_LINE-1)          ; 52-58
-  sta RASTER                    ; 56-62
-  inc VICIRQ                    ; 62-68 - il raster potrebbe già essere sulla linea video 153 (per questo è settato l'IRQ alla linea 154)
+.IRQ_1:                         ;
+  lda #<.IRQ_2                  ; 38-44 (+2) Linea 152 - Queste temporizzazioni funzionano solo sulla versione PAL del chip VIC-II
+  sta CINV                      ; 40-46 (+4) Linea 152
+  lda #>.IRQ_2                  ; 44-50 (+2) Linea 152
+  sta CINV+1                    ; 46-52 (+4) Linea 152
+  lda #(RASTER_LINE-1)          ; 50-56 (+2) Linea 152
+  sta RASTER                    ; 52-58 (+4) Linea 152
+  inc VICIRQ                    ; 56-62 (+6) Linea 152 - Il raster potrebbe già essere sulla linea video 153 (per questo è settato l'IRQ alla linea 154)
 
-  cli                           ; Linea 153    cicli 1-7         (riattiva la modalità IRQ)
+  cli                           ; 62-05 (+2) Linea 152/153 - Riattiva le interruzioni
 
-  inc DUMMY                     ; Linea 153    cicli 7-13
-  dec DUMMY                     ; Linea 153    cicli 13-19
-  inc DUMMY                     ; Linea 153    cicli 19-25
-  dec DUMMY                     ; Linea 153    cicli 25-31
-  inc DUMMY                     ; Linea 153    cicli 31-37
-  dec DUMMY                     ; Linea 153    cicli 37-43
-  inc DUMMY                     ; Linea 153    cicli 43-49
-  dec DUMMY                     ; Linea 153    cicli 49-55
-  inc DUMMY                     ; Linea 153    cicli 55-61
-  nop                           ; Linea 153    cicli 57-63
-  nop                           ;  - Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
-  nop                           ;  - Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
-  nop                           ;  - Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
-  nop                           ;  - Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
-  nop                           ;  "nop" di margine
+  inc DUMMY                     ; 07-13      Linea 153
+  dec DUMMY                     ; 13-19      Linea 153
+  inc DUMMY                     ; 19-25      Linea 153
+  dec DUMMY                     ; 25-31      Linea 153
+  inc DUMMY                     ; 31-37      Linea 153
+  dec DUMMY                     ; 37-43      Linea 153
+  inc DUMMY                     ; 43-49      Linea 153
+  dec DUMMY                     ; 49-55      Linea 153
+  inc DUMMY                     ; 55-61      Linea 153
+  nop                           ; 57-63      Linea 153
+  nop                           ; Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
+  nop                           ; Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
+  nop                           ; Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
+  nop                           ; Possibile IRQ (il passaggio ad .IRQ_2 avverrà dopo 2+7+29=38 cicli oppure dopo 1+2+7+29=39 cicli)
+  nop                           ; "nop" di margine
 
-  jmp IRQHND                    ;  Permette al C64 le operazioni di routine
+  jmp IRQHND                    ; Permette al C64 le operazioni di routine
   jmp SCAN
 
-.IRQ_2:                         ; Quando si arriva qui si sa per certo che sono passati 38 oppure 39 cicli dall'inizio della linea video 154
-  ldy #ROWS                     ; Linea 154    cicli 40-41
-  inc DUMMY                     ; Linea 154    cicli 46-47
-  dec DUMMY                     ; Linea 154    cicli 52-53
-  lda DUMMY                     ; Linea 154    cicli 56-57
+.IRQ_2:                         ;
+  ldy #ROWS                     ; 38-39 (+2) Linea 154 - Quando si arriva qui si sa per certo che sono passati 38 oppure 39 cicli dall'inizio della linea video 154
+  inc DUMMY                     ; 46-47      Linea 154
+  dec DUMMY                     ; 52-53      Linea 154
+  lda DUMMY                     ; 56-57      Linea 154
 
 .Fill:
-  inc EXTCOL                    ; Linea 154    cicli 62-63  +6  - Aggiorna il bordo ogni 63 cicli di clock
-  dey                           ; Linea 155    cicli 1-2    +2    (la durata esatta di una linea di raster)
-  beq .Ret                      ; Linea 155    cicli 3-4*   +2*
-  inc SCROLY                    ; Linea 155    cicli 9-10   +6  - (*) CODICE AUTOMODIFICANTE: l'opcode alternerà tra "inc" e "dec"
-  lda #%00100000                ; Linea 155    cicli 11-12  +2
-  eor .Fill+6                   ; Linea 155    cicli 15-16  +4
-  sta .Fill+6                   ; Linea 155    cicli 19-10  +4  -  Alterna il valore del registro di scroll: vedi (*)
-  inc DUMMY                     ; Linea 155    cicli 25-26  +6
-  dec DUMMY                     ; Linea 155    cicli 31-32  +6
-  inc DUMMY                     ; Linea 155    cicli 37-38  +6
-  dec DUMMY                     ; Linea 155    cicli 43-44  +6
-  inc DUMMY                     ; Linea 155    cicli 49-50  +6
-  lda DUMMY                     ; Linea 155    cicli 53-54  +4
-  jmp .Fill                     ; Linea 155    cicli 56-57  +3  -  Si ritorna a .Fill nelle stesse condizioni in cui ci si entrati per la prima volta
+  inc EXTCOL                    ; 62-63  +6  Linea 154 - Aggiorna il bordo ogni 63 cicli di clock
+  dey                           ; 1-2    +2  Linea 155   (la durata esatta di una linea di raster)
+  beq .Ret                      ; 3-4*   +2* Linea 155
+  inc SCROLY                    ; 9-10   +6  Linea 155 - (*) CODICE AUTOMODIFICANTE: l'opcode alternerà tra "inc" e "dec"
+  lda #%00100000                ; 11-12  +2  Linea 155
+  eor .Fill+6                   ; 15-16  +4  Linea 155
+  sta .Fill+6                   ; 19-10  +4  Linea 155 - Alterna il valore del registro di scroll: vedi (*)
+  inc DUMMY                     ; 25-26  +6  Linea 155
+  dec DUMMY                     ; 31-32  +6  Linea 155
+  inc DUMMY                     ; 37-38  +6  Linea 155
+  dec DUMMY                     ; 43-44  +6  Linea 155
+  inc DUMMY                     ; 49-50  +6  Linea 155
+  lda DUMMY                     ; 53-54  +4  Linea 155
+  jmp .Fill                     ; 56-57  +3  Linea 155 - Si ritorna a .Fill allo stesso numero di cicli in cui ci si entrati per la prima volta
 
 .Ret:
   lda #$1B                      ; Ripristina il registro di scroll verticale fuori dalle rasterbars
