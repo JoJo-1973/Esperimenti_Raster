@@ -179,17 +179,17 @@ PALETTE_CHAMP:
 
   .Loop_Field:
     ; Carattere del campo etichetta (colonne 0-7).
-    lda #(PETSCII_SPACE or %01000000) ; FOR (Corpo)
+    lda #(PETSCII_SPACE OR %01000000) ; FOR (Corpo)
 
     cpy #8
     bcc .Plot_Field
 
-    lda #(PETSCII_SPACE or %10000000) ; Carattere del campo opcode (colonne 8-12).
+    lda #(PETSCII_SPACE OR %10000000) ; Carattere del campo opcode (colonne 8-12).
 
     cpy #13
     bcc .Plot_Field
 
-    lda #(PETSCII_SPACE or %11000000) ; Carattere del campo operando (colonne 13-39).
+    lda #(PETSCII_SPACE OR %11000000) ; Carattere del campo operando (colonne 13-39).
 
   .Plot_Field:
     sta (ZP_1),y                      ; Scrivi il carattere appropriato nella memoria video.

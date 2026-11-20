@@ -413,4 +413,5 @@ _COUNTER = $02;
 START = $0826; 
 .Exit_START = $084D; unused
 IRQ_RASTERBAR = $084E; 
-Irq_Rasterbar.Exit_IRQ_RASTERBAR = $0866; 
+Irq_Rasterbar.No_Last_Row = $0866; 
+Irq_Rasterbar.Exit_IRQ_RASTERBAR = $0869; unused

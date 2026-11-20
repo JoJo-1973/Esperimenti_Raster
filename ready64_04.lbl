@@ -417,4 +417,5 @@ IRQ_1 = $0848;
 Irq_1.Exit_IRQ_1 = $087C; unused
 IRQ_2 = $0882; 
 Irq_2.Loop_Draw_Line = $088D; 
-Irq_2.Exit_IRQ_2 = $08AF; 
+Irq_2.Restore_First_Handler = $08AF; 
+Irq_2.Exit_IRQ_2 = $08C1; unused

@@ -211,8 +211,9 @@ START:
     ; della prima volta.
     bne .Loop_Draw_Line         ; 57  (+3/2)   NEXT: ripete finché .X è diverso da ROWS
 
-  .Exit_IRQ_1:
     inc VICIRQ                  ; Permette le IRQ successive.
+
+  .Exit_IRQ_1:
     jmp IRQHND                  ; Permette al C64 le operazioni di routine.
 
 !zone

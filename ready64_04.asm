@@ -211,7 +211,7 @@ START:
     ; di una linea di raster.
     inc EXTCOL                  ; 56-57 (+6)   FOREVER
     dey                         ; 62-63 (+2)   Linea 15.
-    beq .Exit_IRQ_2             ; 01-02 (+3/2) Linea 16.
+    beq .Restore_First_Handler  ; 01-02 (+3/2) Linea 16.
 
     inc _DUMMY                  ; 03-04 (+6)   Linea 16.
     dec _DUMMY                  ; 09-10 (+6)   Linea 16.
@@ -226,7 +226,7 @@ START:
     ; della prima volta.
     jmp .Loop_Draw_Line         ; 53-54 (+3)   FOREVER: ripete per ogni linea della rasterbar
 
-  .Exit_IRQ_2:
+  .Restore_First_Handler:
     lda #<IRQ_1                 ; Ripristina il primo gestore IRQ.
     sta CINV
     lda #>IRQ_1
@@ -236,6 +236,8 @@ START:
     sta RASTER
 
     inc VICIRQ                  ; Permette le IRQ successive.
+
+  .Exit_IRQ_2:
     jmp IRQMIN                  ; Ripristina i registri ed esce.
 
 !zone

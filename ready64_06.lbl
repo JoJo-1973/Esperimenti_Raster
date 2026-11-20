@@ -417,4 +417,4 @@ Define_Sprite.Exit_DEFINE_SPRITE = $085D; unused
 IRQ_1 = $085E; 
 Irq_1.Loop_Draw_Line = $0869; 
 Irq_1.Next_Draw_Line = $0886; unused
-Irq_1.Exit_IRQ_1 = $088B; unused
+Irq_1.Exit_IRQ_1 = $088E; unused

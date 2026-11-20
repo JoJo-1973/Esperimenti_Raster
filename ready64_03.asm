@@ -138,7 +138,7 @@ START:
     inc EXTCOL                  ; Cambia il colore del bordo.
     inc RASTER                  ; Sposta la IRQ alla linea successiva.
     dec _COUNTER                ; Decrementa il contatore di riga.
-    bne .Exit_IRQ_RASTERBAR     ; Se non è l'ultima riga, esce.
+    bne .No_Last_Row            ; IF: il contatore di riga è a zero (ultima riga)
 
     lda #(ROWS-1)               ; Reinizializza il contatore di riga.
     sta _COUNTER
@@ -149,8 +149,10 @@ START:
     lda #RASTER_LINE            ; Ripristina la linea della prima IRQ.
     sta RASTER
 
-  .Exit_IRQ_RASTERBAR:
+  .No_Last_Row:
     lsr VICIRQ                  ; Permette le IRQ successive.
+
+  .Exit_IRQ_RASTERBAR:
     jmp IRQMIN                  ; Ripristina i registri ed esce.
 
 !zone

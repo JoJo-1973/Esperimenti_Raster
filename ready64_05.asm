@@ -216,7 +216,7 @@ START:
     ; di una linea di raster.
     inc EXTCOL                  ; 56-57 (+6)   FOREVER
     dey                         ; 62-63 (+2)   Linea 154.
-    beq .Exit_IRQ_2             ; 01-02 (+3/2) Linea 155.
+    beq .Restore_First_Handler  ; 01-02 (+3/2) Linea 155.
 
   .Scroll_Opcode:
     inc SCROLY                  ; 03-04 (+6)   (!!!#1) L'opcode alterna inc e dec.
@@ -233,7 +233,7 @@ START:
     ; della prima volta.
     jmp .Loop_Draw_Line         ; 53-54 (+3)   FOREVER: ripete per ogni linea della rasterbar
 
-  .Exit_IRQ_2:
+  .Restore_First_Handler:
     lda #%00011011              ; Ripristina lo scroll verticale fuori dalle rasterbar.
     sta SCROLY
 
@@ -246,6 +246,8 @@ START:
     sta RASTER
 
     inc VICIRQ                  ; Permette le IRQ successive.
+
+  .Exit_IRQ_2:
     jmp IRQMIN                  ; Ripristina i registri ed esce.
 
 !zone
